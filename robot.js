@@ -1,14 +1,40 @@
+var state = {
+    robotPosition: 0,
+    mapSize: 5,
+    icon: 'R'
+}
+
+function availablePosition(newPosition, mapSize) {
+    if (newPosition >= 0 && newPosition < mapSize) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function move(newPosition) {
+    if (availablePosition(newPosition, state.mapSize)) {
+        state.robotPosition = newPosition;
+        render();
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function render() {
+    var mapCells = document.querySelectorAll('.map-cell');
+    mapCells.forEach((aCell, index) => {
+        if (index === state.robotPosition) {
+            aCell.innerHTML = state.icon;
+        } else {
+            aCell.innerHTML = '';
+        }
+    })
+}
 
 function onCommandRight() {
-    var mapCells = document.querySelectorAll('.map-cell');
-    var currentRobotLocation = 0;
-    for (var i = 0; i < mapCells.length; i++) {
-        if (mapCells[i].innerHTML.length > 0) {
-            currentRobotLocation = i;
-            break;
-        }
-    }
-    mapCells[currentRobotLocation].innerHTML = '';
-    // todo check the available of the target position
-    mapCells[currentRobotLocation + 1].innerHTML = 'R';
+    move(state.robotPosition + 1);
 }
+
+render();
