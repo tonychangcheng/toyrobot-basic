@@ -4,6 +4,8 @@ var state = {
     icon: 'R'
 }
 
+var histories = [];
+
 function availablePosition(newPosition, mapSize) {
     if (newPosition >= 0 && newPosition < mapSize) {
         return true;
@@ -14,6 +16,7 @@ function availablePosition(newPosition, mapSize) {
 
 function move(newPosition) {
     if (availablePosition(newPosition, state.mapSize)) {
+        histories.push(state);
         state.robotPosition = newPosition;
         render();
         return true;
@@ -35,6 +38,11 @@ function render() {
 
 function onCommandRight() {
     move(state.robotPosition + 1);
+}
+
+function onReverse() {
+    state = histories.pop();
+    render();
 }
 
 render();
