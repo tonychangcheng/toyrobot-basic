@@ -1,9 +1,12 @@
-class Game {
-    constructor(mapSize, initPosition, icon) {
+'use strict';
+
+class Game extends React.Component {
+    constructor(props) {
+        super(props);
         this.state = {
-            robotPosition: initPosition,
-            mapSize: mapSize,
-            icon: icon
+            robotPosition: 2,
+            mapSize: 8,
+            icon: 'r',
         };
     }
 
@@ -17,8 +20,7 @@ class Game {
 
     move(newPosition) {
         if (this.availablePosition(newPosition, this.state.mapSize)) {
-            this.state.robotPosition = newPosition;
-            this.render();
+            this.setState({robotPosition: newPosition});
             return true;
         } else {
             return false;
@@ -26,31 +28,39 @@ class Game {
     }
 
     render() {
-        let gameMap = document.createElement("div");
-        gameMap.className += "game-map";
-        gameMap.setAttribute("id", "game-map");
-
-        let row = document.createElement("div");
-        row.className += " map-row";
-        gameMap.appendChild(row);
+        let cells = [];
         for (let x = 0; x < this.state.mapSize; x++) {
-            let cell = document.createElement("div");
-            cell.className += " map-cell"
-            if (this.state.robotPosition === x) {
-                cell.innerHTML = this.state.icon;
-            }
-            row.appendChild(cell);
+            let cell = React.createElement(
+                'div',
+                {className: 'map-cell', key: x},
+                this.state.robotPosition === x ? this.state.icon : ''
+            )
+            cells.push(cell);
         }
-        
-        let root = document.getElementById("game-map");
-        root.replaceWith(gameMap);
-    }
 
-    onCommandRight() {
-        this.move(this.state.robotPosition + 1);
+        let row = React.createElement('div', {className: 'map-row'}, cells);
+
+        let buttonLeft = React.createElement(
+            'button', 
+            {
+                onClick: () => this.move(this.state.robotPosition - 1)
+            }, 
+            '<='
+        )
+        let buttonRight = React.createElement(
+            'button', 
+            {
+                onClick: () => this.move(this.state.robotPosition + 1)
+            }, 
+            '=>'
+        )
+        let controlPanel = React.createElement('div', {className: 'control-panel'}, buttonLeft, buttonRight);
+
+        let gameMap = React.createElement('div', {className: 'game-map'}, row, controlPanel);
+        return gameMap;
     }
 
 }
 
-let game = new Game(10, 2, 'R');
-game.render();
+const domContainer = document.querySelector('#game-map');
+ReactDOM.render(React.createElement(Game), domContainer);
