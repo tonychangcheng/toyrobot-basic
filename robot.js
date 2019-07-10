@@ -1,48 +1,46 @@
-var state = {
-    robotPosition: 0,
-    mapSize: 5,
-    icon: 'R'
-}
-
-var histories = [];
-
-function availablePosition(newPosition, mapSize) {
-    if (newPosition >= 0 && newPosition < mapSize) {
-        return true;
-    } else {
-        return false;
+class Game {
+    constructor(mapSize, initPosition, icon) {
+        this.state = {
+            robotPosition: initPosition,
+            mapSize: mapSize,
+            icon: icon
+        };
     }
-}
 
-function move(newPosition) {
-    if (availablePosition(newPosition, state.mapSize)) {
-        histories.push(state);
-        state.robotPosition = newPosition;
-        render();
-        return true;
-    } else {
-        return false;
-    }
-}
-
-function render() {
-    var mapCells = document.querySelectorAll('.map-cell');
-    mapCells.forEach((aCell, index) => {
-        if (index === state.robotPosition) {
-            aCell.innerHTML = state.icon;
+    availablePosition(newPosition, mapSize) {
+        if (newPosition >= 0 && newPosition < mapSize) {
+            return true;
         } else {
-            aCell.innerHTML = '';
+            return false;
         }
-    })
+    }
+    
+    move(newPosition) {
+        if (this.availablePosition(newPosition, this.state.mapSize)) {
+            this.state.robotPosition = newPosition;
+            this.render();
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    render() {
+        var mapCells = document.querySelectorAll('.map-cell');
+        mapCells.forEach(function(aCell, index) {
+            if (index === this.state.robotPosition) {
+                aCell.innerHTML = this.state.icon;
+            } else {
+                aCell.innerHTML = '';
+            }
+        })
+    }
+    
+    onCommandRight() {
+        this.move(this.state.robotPosition + 1);
+    }
+    
 }
 
-function onCommandRight() {
-    move(state.robotPosition + 1);
-}
-
-function onReverse() {
-    state = histories.pop();
-    render();
-}
-
-render();
+var game = new Game(5, 2, 'R');
+game.render();
