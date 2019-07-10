@@ -14,7 +14,7 @@ class Game {
             return false;
         }
     }
-    
+
     move(newPosition) {
         if (this.availablePosition(newPosition, this.state.mapSize)) {
             this.state.robotPosition = newPosition;
@@ -24,23 +24,33 @@ class Game {
             return false;
         }
     }
-    
+
     render() {
-        var mapCells = document.querySelectorAll('.map-cell');
-        mapCells.forEach(function(aCell, index) {
-            if (index === this.state.robotPosition) {
-                aCell.innerHTML = this.state.icon;
-            } else {
-                aCell.innerHTML = '';
+        let gameMap = document.createElement("div");
+        gameMap.className += "game-map";
+        gameMap.setAttribute("id", "game-map");
+
+        let row = document.createElement("div");
+        row.className += " map-row";
+        gameMap.appendChild(row);
+        for (let x = 0; x < this.state.mapSize; x++) {
+            let cell = document.createElement("div");
+            cell.className += " map-cell"
+            if (this.state.robotPosition === x) {
+                cell.innerHTML = this.state.icon;
             }
-        })
+            row.appendChild(cell);
+        }
+        
+        let root = document.getElementById("game-map");
+        root.replaceWith(gameMap);
     }
-    
+
     onCommandRight() {
         this.move(this.state.robotPosition + 1);
     }
-    
+
 }
 
-var game = new Game(5, 2, 'R');
+let game = new Game(10, 2, 'R');
 game.render();
