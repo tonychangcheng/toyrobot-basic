@@ -26,24 +26,7 @@ class Game {
     }
 
     render() {
-        let gameMap = document.createElement("div");
-        gameMap.className += "game-map";
-        gameMap.setAttribute("id", "game-map");
-
-        let row = document.createElement("div");
-        row.className += " map-row";
-        gameMap.appendChild(row);
-        for (let x = 0; x < this.state.mapSize; x++) {
-            let cell = document.createElement("div");
-            cell.className += " map-cell"
-            if (this.state.robotPosition === x) {
-                cell.innerHTML = this.state.icon;
-            }
-            row.appendChild(cell);
-        }
-        
-        let root = document.getElementById("game-map");
-        root.replaceWith(gameMap);
+        return this.state.icon + ' ' + this.state.robotPosition;
     }
 
     onCommandRight() {
@@ -54,3 +37,23 @@ class Game {
 
 let game = new Game(10, 2, 'R');
 game.render();
+
+
+var stdin = process.openStdin();
+
+stdin.addListener("data", function(d) {
+    // note:  d is an object, and when converted to a string it will
+    // end with a linefeed.  so we (rather crudely) account for that  
+    // with toString() and then trim() 
+    let command = d.toString().trim();
+
+    if (command === 'start') {
+        game = new Game(5, 0, 'R');
+    } else if (command === 'left') {
+        game.onCommandLeft();
+    } else if (command === 'right') {
+        game.onCommandRight();
+    } else if (command === 'report') {
+        console.log(game.render());
+    }
+});
